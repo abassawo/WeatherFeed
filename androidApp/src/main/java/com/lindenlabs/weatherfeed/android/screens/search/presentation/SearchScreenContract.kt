@@ -7,10 +7,10 @@ object SearchScreenContract {
     sealed class ViewState {
 
         data class Initial(
-            val showPermissionNeeded: Boolean,
             val query: String = "",
-            val citySearchResult: WeatherCardViewEntity? = null,
+            val showPermissionNeeded: Boolean,
             val currentWeather: WeatherCardViewEntity? = null,
+            val citySearchResult: WeatherCardViewEntity? = null,
             val isSearchActive: Boolean = false
         ) : ViewState()
     }
@@ -18,7 +18,8 @@ object SearchScreenContract {
     sealed class ViewEvent {
         object ShowLocationPermissionPrompt : ViewEvent()
 
-        data class ShowWeatherForCurrentLocation(val currentWeather: WeatherCardViewEntity) : ViewEvent()
+        data class ShowWeatherForCurrentLocation(val currentWeather: WeatherCardViewEntity) :
+            ViewEvent()
     }
 
 

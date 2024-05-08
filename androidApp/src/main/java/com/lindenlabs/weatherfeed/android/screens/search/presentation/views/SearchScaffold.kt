@@ -19,7 +19,7 @@ import com.lindenlabs.weatherfeed.android.screens.geo_weather_card.CurrentWeathe
 import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchViewModel
 
 @Composable
-internal fun SearchScaffold(navController: NavController, viewModel: SearchViewModel) {
+internal fun SearchScaffold(viewModel: SearchViewModel) {
     Scaffold(
         topBar = {
             CollapsingEffectScreen()
@@ -29,7 +29,7 @@ internal fun SearchScaffold(navController: NavController, viewModel: SearchViewM
                 .padding(it)
                 .fillMaxWidth()
         ) {
-            SearchScreen()
+            SearchScreen(viewModel)
         }
     }
 }

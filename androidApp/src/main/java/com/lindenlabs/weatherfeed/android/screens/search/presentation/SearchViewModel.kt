@@ -23,25 +23,30 @@ class SearchViewModel @Inject constructor(
     private val job = SupervisorJob()
     private val ioScope = CoroutineScope(Dispatchers.IO + job)
     private val isFirstLaunch: Boolean = true
-    private val externalScope = CoroutineScope(Dispatchers.Main)
     private val mutableViewState =
         MutableStateFlow<ViewState>(
-            ViewState.Initial(showPermissionNeeded = isLocationPermissionGranted.invoke().not())
+            ViewState.Initial("", showPermissionNeeded = isLocationPermissionGranted())
         )
     val viewState: StateFlow<ViewState> = mutableViewState
 
     private val mutableViewEvent = MutableStateFlow<SearchScreenContract.ViewEvent?>(null)
     val viewEvent: StateFlow<SearchScreenContract.ViewEvent?> = mutableViewEvent
 
+    init {
+        ioScope.launch {
+            emitViewState()
+        }
+    }
+
 
     fun search(query: String) {
         if (query.isNotEmpty()) {
             recordSearchHistory(query)
-            viewModelScope.launch(ioScope.coroutineContext) {
+            ioScope.launch(ioScope.coroutineContext) {
                 runCatching { getSearchResultViewEntities(query) }
                     .onSuccess {
                         Log.d("SVM", "Testing success $it")
-                        externalScope.launch {
+                        ioScope.launch {
                             mutableViewState.value =
                                 (viewState.value as ViewState.Initial).copy(citySearchResult = it)
                         }
@@ -60,25 +65,12 @@ class SearchViewModel @Inject constructor(
     private suspend fun tryToEmitLiveWeatherUpdate(interaction: SearchScreenContract.PermissionInteraction) {
         val hasLocationPermissions = interaction.isLocationEnabled()
         if (hasLocationPermissions) {
-            val currentWeather = getSearchResultViewEntities.getWeatherForCurrentLocation()
-            Log.d("SVM", "Handle interaction emit weather $currentWeather")
-
-
-            externalScope.launch {
-                mutableViewState.value = (viewState.value as ViewState.Initial).copy(
-                    showPermissionNeeded = false,
-                    currentWeather = currentWeather
-                )
-                currentWeather?.let {
-                    mutableViewEvent.value =
-                        SearchScreenContract.ViewEvent.ShowWeatherForCurrentLocation(it)
-                }
+            ioScope.launch {
+                emitViewState()
             }
-
         } else {
             mutableViewState.value = (viewState.value as ViewState.Initial).copy(
                 showPermissionNeeded = true
-//                weatherForCurrentLocation = null
             )
             if (isFirstLaunch) {
                 mutableViewEvent.value = SearchScreenContract.ViewEvent.ShowLocationPermissionPrompt
@@ -86,8 +78,21 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    private suspend fun emitViewState() {
+        if (isLocationPermissionGranted()) {
+            val currentWeather = getSearchResultViewEntities.getWeatherForCurrentLocation()
+            Log.d("SVM", "Handle interaction emit weather $currentWeather")
+
+            currentWeather?.let {
+                mutableViewEvent.value =
+                    SearchScreenContract.ViewEvent.ShowWeatherForCurrentLocation(it)
+            }
+        }
+    }
+
     fun handleInteraction(interaction: SearchScreenContract.PermissionInteraction) {
         Log.d("SVM", "Handle interactin")
+        val isPermissionEnabled = isLocationPermissionGranted() || interaction.isLocationEnabled()
         viewModelScope.launch {
             tryToEmitLiveWeatherUpdate(interaction)
         }

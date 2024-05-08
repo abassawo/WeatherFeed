@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -13,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lindenlabs.weatherfeed.android.BuildConfig
 import com.lindenlabs.weatherfeed.android.MainActivity
@@ -24,7 +26,10 @@ import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchView
 fun CurrentWeatherCard() {
     val viewModel: SearchViewModel = hiltViewModel()
     when (val viewEvent = viewModel.viewEvent.collectAsState().value) {
-        is SearchScreenContract.ViewEvent.ShowWeatherForCurrentLocation -> Text(text = viewEvent.currentWeather.description)
+        is SearchScreenContract.ViewEvent.ShowWeatherForCurrentLocation -> Card(Modifier.fillMaxWidth()) {
+            Text(text = viewEvent.currentWeather.description, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+        }
+
         SearchScreenContract.ViewEvent.ShowLocationPermissionPrompt -> PermissionNeededCard()
         else -> Unit
     }

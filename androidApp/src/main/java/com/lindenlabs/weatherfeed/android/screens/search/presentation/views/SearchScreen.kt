@@ -14,15 +14,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchScreenContract
 import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchViewModel
 import com.lindenlabs.weatherfeed.android.ui.WeatherCard
-import kotlinx.coroutines.flow.collect
 
 @Composable
-internal fun SearchScreen() {
+internal fun SearchScreen(viewModel: SearchViewModel) {
 
     Scaffold { padding ->
         Column(
@@ -30,7 +28,6 @@ internal fun SearchScreen() {
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            val viewModel = hiltViewModel<SearchViewModel>()
             rememberSystemUiController().apply {
                 setSystemBarsColor(
                     color = Color.Transparent
@@ -60,8 +57,8 @@ internal fun SearchScreen() {
                         }
                     }
                 }
-            }
 
+            }
         }
     }
 }

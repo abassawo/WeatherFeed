@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        showLocationPermissionsDialog()
+        showLocationPermissionsDialog()
         setContent {
             val navController = rememberNavController()
             Scaffold(
@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
                 val viewModel: SearchViewModel = hiltViewModel()
                 NavHost(navController = navController, startDestination = "search") {
                     composable("search") {
-                        SearchScaffold(navController = navController, viewModel)
+                        SearchScaffold(viewModel)
                     }
                     composable("saved") {
                         Text("Saved")
