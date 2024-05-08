@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Weather Feed</string>
+    <string name="location_permission_title">Location Permission</string>
+    <string name="location_permission_subtitle">This app requires access to your location to function properly. \" +\n                            \\nWould you like to grant access?</string>
+    <string name="accept">Accept\n</string>
+    <string name="deny">Deny\n</string>
+</resources>
