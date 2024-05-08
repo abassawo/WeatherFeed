@@ -23,9 +23,10 @@ class SearchViewModel @Inject constructor(
     private val job = SupervisorJob()
     private val ioScope = CoroutineScope(Dispatchers.IO + job)
     private val isFirstLaunch: Boolean = true
+    val query = MutableStateFlow("")
     private val mutableViewState =
-        MutableStateFlow<ViewState>(
-            ViewState.Initial("", showPermissionNeeded = isLocationPermissionGranted())
+        MutableStateFlow(
+            ViewState("", showPermissionNeeded = isLocationPermissionGranted())
         )
     val viewState: StateFlow<ViewState> = mutableViewState
 
@@ -39,16 +40,16 @@ class SearchViewModel @Inject constructor(
     }
 
 
-    fun search(query: String) {
-        if (query.isNotEmpty()) {
-            recordSearchHistory(query)
+    fun search() {
+        if (query.value.isNotEmpty()) {
+            recordSearchHistory(query.value)
             ioScope.launch(ioScope.coroutineContext) {
-                runCatching { getSearchResultViewEntities(query) }
+                runCatching { getSearchResultViewEntities(query.value) }
                     .onSuccess {
                         Log.d("SVM", "Testing success $it")
                         ioScope.launch {
                             mutableViewState.value =
-                                (viewState.value as ViewState.Initial).copy(citySearchResult = it)
+                                viewState.value.copy(citySearchResult = it, isSearchActive = true)
                         }
                     }
                     .onFailure {
@@ -59,7 +60,14 @@ class SearchViewModel @Inject constructor(
     }
 
     fun updateQuery(query: String) {
-        mutableViewState.value = (mutableViewState.value as ViewState.Initial).copy(query = query)
+        this.query.value = query
+        if(query.trim().isEmpty()) {
+            clearSearch()
+        }
+    }
+
+    private fun clearSearch() {
+        mutableViewState.value = viewState.value.copy(query = "", isSearchActive = false, citySearchResult = null)
     }
 
     private suspend fun tryToEmitLiveWeatherUpdate(interaction: SearchScreenContract.PermissionInteraction) {
@@ -69,7 +77,7 @@ class SearchViewModel @Inject constructor(
                 emitViewState()
             }
         } else {
-            mutableViewState.value = (viewState.value as ViewState.Initial).copy(
+            mutableViewState.value = viewState.value.copy(
                 showPermissionNeeded = true
             )
             if (isFirstLaunch) {
@@ -92,7 +100,6 @@ class SearchViewModel @Inject constructor(
 
     fun handleInteraction(interaction: SearchScreenContract.PermissionInteraction) {
         Log.d("SVM", "Handle interactin")
-        val isPermissionEnabled = isLocationPermissionGranted() || interaction.isLocationEnabled()
         viewModelScope.launch {
             tryToEmitLiveWeatherUpdate(interaction)
         }

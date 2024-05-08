@@ -4,16 +4,14 @@ import com.lindenlabs.weatherfeed.android.ui.WeatherCardViewEntity
 
 object SearchScreenContract {
 
-    sealed class ViewState {
+    data class ViewState(
+        val query: String = "",
+        val showPermissionNeeded: Boolean,
+        val currentWeather: WeatherCardViewEntity? = null,
+        val citySearchResult: WeatherCardViewEntity? = null,
+        val isSearchActive: Boolean = false
+    )
 
-        data class Initial(
-            val query: String = "",
-            val showPermissionNeeded: Boolean,
-            val currentWeather: WeatherCardViewEntity? = null,
-            val citySearchResult: WeatherCardViewEntity? = null,
-            val isSearchActive: Boolean = false
-        ) : ViewState()
-    }
 
     sealed class ViewEvent {
         object ShowLocationPermissionPrompt : ViewEvent()
