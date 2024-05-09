@@ -1,8 +1,12 @@
 package com.lindenlabs.weatherfeed.android.screens.search.presentation
 
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lindenlabs.weatherfeed.android.data.Coordinate
+import com.lindenlabs.weatherfeed.android.domain.GetLocation
+import com.lindenlabs.weatherfeed.android.domain.OnLocationListener
 import com.lindenlabs.weatherfeed.android.domain.RecordSearchHistory
 import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchScreenContract.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,8 +22,9 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     val isLocationPermissionGranted: IsLocationPermissionGranted,
     val getSearchResultViewEntities: GetSearchResultViewEntities,
+    val getLocation: GetLocation,
     val recordSearchHistory: RecordSearchHistory,
-) : ViewModel() {
+) : ViewModel(), OnLocationListener {
     private val job = SupervisorJob()
     private val ioScope = CoroutineScope(Dispatchers.IO + job)
     private val isFirstLaunch: Boolean = true
@@ -28,17 +33,19 @@ class SearchViewModel @Inject constructor(
         MutableStateFlow(
             ViewState("", showPermissionNeeded = isLocationPermissionGranted())
         )
+    var currentLocation: Location? = null
     val viewState: StateFlow<ViewState> = mutableViewState
-
     private val mutableViewEvent = MutableStateFlow<SearchScreenContract.ViewEvent?>(null)
     val viewEvent: StateFlow<SearchScreenContract.ViewEvent?> = mutableViewEvent
 
     init {
+        if (isLocationPermissionGranted()) {
+            getLocation(this)
+        }
         ioScope.launch {
-            emitViewState()
+            tryToEmitLiveWeatherUpdate()
         }
     }
-
 
     fun search() {
         if (query.value.isNotEmpty()) {
@@ -61,17 +68,18 @@ class SearchViewModel @Inject constructor(
 
     fun updateQuery(query: String) {
         this.query.value = query
-        if(query.trim().isEmpty()) {
+        if (query.trim().isEmpty()) {
             clearSearch()
         }
     }
 
     private fun clearSearch() {
-        mutableViewState.value = viewState.value.copy(query = "", isSearchActive = false, citySearchResult = null)
+        mutableViewState.value =
+            viewState.value.copy(query = "", isSearchActive = false, citySearchResult = null)
     }
 
-    private suspend fun tryToEmitLiveWeatherUpdate(interaction: SearchScreenContract.PermissionInteraction) {
-        val hasLocationPermissions = interaction.isLocationEnabled()
+    private suspend fun tryToEmitLiveWeatherUpdate() {
+        val hasLocationPermissions = isLocationPermissionGranted()
         if (hasLocationPermissions) {
             ioScope.launch {
                 emitViewState()
@@ -88,12 +96,14 @@ class SearchViewModel @Inject constructor(
 
     private suspend fun emitViewState() {
         if (isLocationPermissionGranted()) {
-            val currentWeather = getSearchResultViewEntities.getWeatherForCurrentLocation()
-            Log.d("SVM", "Handle interaction emit weather $currentWeather")
+            currentLocation?.let {
+                val currentWeather = getSearchResultViewEntities.getWeather(it.toCoordinate())
+                Log.d("SVM", "Handle interaction emit weather $currentWeather")
 
-            currentWeather?.let {
-                mutableViewEvent.value =
-                    SearchScreenContract.ViewEvent.ShowWeatherForCurrentLocation(it)
+                currentWeather?.let {
+                    mutableViewEvent.value =
+                        SearchScreenContract.ViewEvent.ShowWeatherForCurrentLocation(it)
+                }
             }
         }
     }
@@ -101,12 +111,29 @@ class SearchViewModel @Inject constructor(
     fun handleInteraction(interaction: SearchScreenContract.PermissionInteraction) {
         Log.d("SVM", "Handle interactin")
         viewModelScope.launch {
-            tryToEmitLiveWeatherUpdate(interaction)
+            tryToEmitLiveWeatherUpdate()
         }
     }
-
 
     private fun SearchScreenContract.PermissionInteraction.isLocationEnabled(): Boolean {
         return this.permissions.any { it.value }
     }
+
+    override fun onLocationAvailable(location: Location) {
+        this.currentLocation = location
+        ioScope.launch {
+            emitViewState()
+        }
+
+    }
+
+    override fun onLocationUnavailable() {
+        this.currentLocation = null
+        ioScope.launch {
+            emitViewState()
+        }
+    }
 }
+
+private fun Location.toCoordinate(): Coordinate =
+    Coordinate(this.latitude.toFloat(), this.longitude.toFloat())

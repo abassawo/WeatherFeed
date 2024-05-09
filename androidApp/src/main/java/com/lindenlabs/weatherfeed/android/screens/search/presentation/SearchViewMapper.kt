@@ -10,10 +10,18 @@ enum class UseCase {
 
 class SearchViewMapper @Inject constructor() {
 
-    fun map(response: RawWeatherResponse, useCase: UseCase = UseCase.Search): WeatherCardViewEntity {
+    fun mapSearch(response: RawWeatherResponse): WeatherCardViewEntity {
         return WeatherCardViewEntity(
             query = response.cityName,
-            description = response.description(useCase),
+            description = response.description(UseCase.Search),
+            rawWeatherResponse = response
+        )
+    }
+
+    fun mapCurrentWeather(response: RawWeatherResponse) : WeatherCardViewEntity {
+        return WeatherCardViewEntity(
+            query = response.cityName,
+            description = response.description(UseCase.LocationBased),
             rawWeatherResponse = response
         )
     }

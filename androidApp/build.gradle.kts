@@ -65,6 +65,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.1.0")
     implementation("com.squareup.retrofit2:converter-gson:2.1.0")
     implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("com.google.android.gms:play-services-location:17.0.0")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.24.6-alpha")
     val glide = "4.11.0"
     implementation("com.github.bumptech.glide:glide:$glide")
