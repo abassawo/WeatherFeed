@@ -16,10 +16,8 @@ object SearchScreenContract {
     sealed class ViewEvent {
         object ShowLocationPermissionPrompt : ViewEvent()
 
-        data class ShowWeatherForCurrentLocation(val currentWeather: WeatherCardViewEntity) :
-            ViewEvent()
     }
 
 
-    data class PermissionInteraction(val permissions: Map<String, Boolean>)
+    data class PermissionInteraction(val isGpsEnabled: Boolean)
 }

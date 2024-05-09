@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -39,7 +40,7 @@ fun CollapsingEffectScreen(viewModel: SearchViewModel) {
     LazyColumn(
         Modifier
             .fillMaxWidth()
-            .height(100.dp),
+            .wrapContentHeight(),
         lazyListState,
     ) {
         item {

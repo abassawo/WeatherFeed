@@ -3,8 +3,8 @@ package com.lindenlabs.weatherfeed.android.screens.geo_weather_card
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.lindenlabs.weatherfeed.android.BuildConfig
 import com.lindenlabs.weatherfeed.android.MainActivity
 import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchScreenContract
@@ -25,9 +24,19 @@ import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchView
 @Composable
 fun CurrentWeatherCard(viewModel: SearchViewModel) {
     val viewState = viewModel.viewState.collectAsState().value
-    viewState.currentWeather?.let {
+    AnimatedVisibility(visible = viewState.showPermissionNeeded) {
+        PermissionNeededCard()
+    }
+
+    val showCurrentWeather = viewState.currentWeather != null
+
+    AnimatedVisibility(visible = showCurrentWeather) {
         Card(Modifier.fillMaxWidth()) {
-            Text(text = it.description, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+            Text(
+                text = viewState.currentWeather!!.description,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }

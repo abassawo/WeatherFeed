@@ -55,7 +55,6 @@ class GpsUtils(private val context: Context) {
                             val errorMessage =
                                 "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
                             Log.e(ContentValues.TAG, errorMessage)
-
                             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                         }
                     }

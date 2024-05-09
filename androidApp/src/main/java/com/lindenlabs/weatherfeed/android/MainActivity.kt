@@ -1,6 +1,5 @@
 package com.lindenlabs.weatherfeed.android
 
-import android.Manifest
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
@@ -15,7 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
@@ -28,6 +26,7 @@ import com.lindenlabs.weatherfeed.android.domain.location.GpsUtils
 import com.lindenlabs.weatherfeed.android.domain.location.GpsUtils.Companion.GPS_REQUEST
 import com.lindenlabs.weatherfeed.android.domain.location.GpsUtils.Companion.LOCATION_REQUEST
 import com.lindenlabs.weatherfeed.android.domain.location.LocationViewModel
+import com.lindenlabs.weatherfeed.android.screens.history.HistoryScaffold
 import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchScreenContract
 import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchViewModel
 import com.lindenlabs.weatherfeed.android.screens.search.presentation.views.SearchScaffold
@@ -44,16 +43,24 @@ class MainActivity : ComponentActivity() {
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
-            viewModel.handleInteraction(SearchScreenContract.PermissionInteraction(permissions))
+            this@MainActivity.isGPSEnabled = permissions.any { it.value }
+            viewModel.handleInteraction(SearchScreenContract.PermissionInteraction(isGPSEnabled))
         }
     }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        locationPermissionRequest.launch(
+            listOf(
+                ACCESS_FINE_LOCATION,
+                ACCESS_COARSE_LOCATION
+            ).toTypedArray()
+        )
         GpsUtils(this).turnGPSOn(object : GpsUtils.OnGpsListener {
             override fun gpsStatus(isGPSEnable: Boolean) {
                 this@MainActivity.isGPSEnabled = isGPSEnable
+                viewModel.handleInteraction(SearchScreenContract.PermissionInteraction(isGPSEnabled))
             }
         })
 
@@ -70,7 +77,7 @@ class MainActivity : ComponentActivity() {
                         SearchScaffold(viewModel)
                     }
                     composable("saved") {
-                        Text("Saved")
+                        HistoryScaffold()
                     }
                 }
             }
@@ -89,6 +96,7 @@ class MainActivity : ComponentActivity() {
                 isGPSEnabled = true
                 invokeLocationAction()
             }
+            viewModel.handleInteraction(SearchScreenContract.PermissionInteraction(isGPSEnabled))
         }
     }
 

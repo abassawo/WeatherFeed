@@ -33,7 +33,6 @@ class SearchViewModel @Inject constructor(
     val viewState: StateFlow<ViewState> = mutableViewState
     private val mutableViewEvent = MutableStateFlow<SearchScreenContract.ViewEvent?>(null)
     val viewEvent: StateFlow<SearchScreenContract.ViewEvent?> = mutableViewEvent
-
     init {
         ioScope.launch {
             tryToEmitLiveWeatherUpdate()
@@ -79,7 +78,8 @@ class SearchViewModel @Inject constructor(
             }
         } else {
             mutableViewState.value = viewState.value.copy(
-                showPermissionNeeded = true
+                showPermissionNeeded = true,
+                currentWeather = null
             )
             if (isFirstLaunch) {
                 mutableViewEvent.value = SearchScreenContract.ViewEvent.ShowLocationPermissionPrompt
@@ -92,24 +92,18 @@ class SearchViewModel @Inject constructor(
             currentLocation?.let { coordinate ->
                 val currentWeather = getSearchResultViewEntities.getWeather(coordinate)
                 Log.d("SVM", "Handle interaction emit weather $currentWeather")
-
-                mutableViewEvent.value =
-                    SearchScreenContract.ViewEvent.ShowWeatherForCurrentLocation(currentWeather)
             }
         }
     }
 
     fun handleInteraction(interaction: SearchScreenContract.PermissionInteraction) {
-        Log.d("SVM", "Handle interactin")
+        Log.d("SVM", "Handle interaction")
+        val isGpsEnabled = interaction.isGpsEnabled
+        mutableViewState.value = viewState.value.copy(showPermissionNeeded = isGpsEnabled.not())
         viewModelScope.launch {
             tryToEmitLiveWeatherUpdate()
         }
     }
-
-    private fun SearchScreenContract.PermissionInteraction.isLocationEnabled(): Boolean {
-        return this.permissions.any { it.value }
-    }
-
 
     fun updateCurrentLocation(coordinate: Coordinate?) {
         this.currentLocation = coordinate
@@ -118,8 +112,6 @@ class SearchViewModel @Inject constructor(
                 val currentWeather = getSearchResultViewEntities.getWeather(it)
                 CoroutineScope(Dispatchers.Main).launch {
                     mutableViewState.value = viewState.value.copy(currentWeather = currentWeather)
-                    mutableViewEvent.value =
-                        SearchScreenContract.ViewEvent.ShowWeatherForCurrentLocation(currentWeather)
                 }
             }
         }
