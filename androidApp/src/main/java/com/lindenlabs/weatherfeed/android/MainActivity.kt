@@ -89,6 +89,7 @@ class MainActivity : ComponentActivity() {
         invokeLocationAction()
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {

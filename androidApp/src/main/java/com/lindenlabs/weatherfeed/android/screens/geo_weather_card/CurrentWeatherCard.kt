@@ -10,6 +10,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,15 +29,22 @@ fun CurrentWeatherCard(viewModel: SearchViewModel) {
         PermissionNeededCard()
     }
 
-    val showCurrentWeather = viewState.currentWeather != null
+    val hasCurrentWeather = viewState.currentWeather != null
+    LaunchedEffect(key1 = viewState.showPermissionNeeded) {
+        if (viewState.showPermissionNeeded.not() && hasCurrentWeather.not()) {
+            viewModel.handleInteraction(SearchScreenContract.PermissionInteraction(true))
+        }
+    }
 
-    AnimatedVisibility(visible = showCurrentWeather) {
-        Card(Modifier.fillMaxWidth()) {
-            Text(
-                text = viewState.currentWeather!!.description,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
+    viewState.currentWeather?.let {
+        AnimatedVisibility(visible = hasCurrentWeather) {
+            Card(Modifier.fillMaxWidth()) {
+                Text(
+                    text = it.description,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }
