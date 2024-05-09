@@ -25,26 +25,33 @@ import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchView
 @Composable
 fun CurrentWeatherCard(viewModel: SearchViewModel) {
     val viewState = viewModel.viewState.collectAsState().value
-    AnimatedVisibility(visible = viewState.showPermissionNeeded) {
+    LaunchedEffect(Unit) {
+        viewModel.refresh(SearchScreenContract.PermissionInteraction)
+    }
+
+    val showPermissionNeededCard = viewState.showPermissionNeeded
+
+    AnimatedVisibility(visible = showPermissionNeededCard) {
         PermissionNeededCard()
     }
 
-    val hasCurrentWeather = viewState.currentWeather != null
-    LaunchedEffect(key1 = viewState.showPermissionNeeded) {
-        if (viewState.showPermissionNeeded.not() && hasCurrentWeather.not()) {
-            viewModel.handleInteraction(SearchScreenContract.PermissionInteraction(true))
-        }
-    }
-
-    viewState.currentWeather?.let {
-        AnimatedVisibility(visible = hasCurrentWeather) {
-            Card(Modifier.fillMaxWidth()) {
+    AnimatedVisibility(visible = showPermissionNeededCard.not()) {
+        Card(Modifier.fillMaxWidth()) {
+            LaunchedEffect(Unit) {
+                viewModel.refresh(SearchScreenContract.PermissionInteraction)
+            }
+            viewState.currentWeather?.let {
                 Text(
                     text = it.description,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
+            } ?: Button(onClick = {
+                viewModel.refresh()
+            }) {
+                Text(text = "Fetch weather for current location")
             }
+
         }
     }
 }

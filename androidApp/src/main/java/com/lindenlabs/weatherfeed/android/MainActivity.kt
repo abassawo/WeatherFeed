@@ -7,6 +7,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -36,21 +37,26 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val viewModel: SearchViewModel by viewModels()
-    private var isGPSEnabled = false
     val locationViewModel: LocationViewModel by viewModels()
+    private var isGPSEnabled = false
 
     val locationPermissionRequest by lazy {
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
             this@MainActivity.isGPSEnabled = permissions.any { it.value }
-            viewModel.handleInteraction(SearchScreenContract.PermissionInteraction(isGPSEnabled))
+            viewModel.refresh(SearchScreenContract.PermissionInteraction)
         }
     }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestLocationPermission()
+        setContentNavGraph()
+    }
+
+    private fun requestLocationPermission() {
         locationPermissionRequest.launch(
             listOf(
                 ACCESS_FINE_LOCATION,
@@ -60,10 +66,14 @@ class MainActivity : ComponentActivity() {
         GpsUtils(this).turnGPSOn(object : GpsUtils.OnGpsListener {
             override fun gpsStatus(isGPSEnable: Boolean) {
                 this@MainActivity.isGPSEnabled = isGPSEnable
-                viewModel.handleInteraction(SearchScreenContract.PermissionInteraction(isGPSEnabled))
+                viewModel.refresh(SearchScreenContract.PermissionInteraction)
             }
         })
+    }
 
+
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    private fun setContentNavGraph() {
         setContent {
             val navController = rememberNavController()
             Scaffold(
@@ -92,12 +102,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        Log.d("MainActivity", "On Activity Result")
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == GPS_REQUEST) {
                 isGPSEnabled = true
                 invokeLocationAction()
             }
-            viewModel.handleInteraction(SearchScreenContract.PermissionInteraction(isGPSEnabled))
+            viewModel.refresh(SearchScreenContract.PermissionInteraction)
         }
     }
 
@@ -136,7 +147,9 @@ class MainActivity : ComponentActivity() {
 
     private fun startLocationUpdate() {
         locationViewModel.getLocationData().observe(this, Observer {
-            it?.let { viewModel.updateCurrentLocation(it) }
+            it?.let {
+                viewModel.refresh()
+            }
         })
     }
 

@@ -28,6 +28,7 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchScreenContract
 import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchViewModel
 import com.lindenlabs.weatherfeed.android.ui.WeatherCard
 
