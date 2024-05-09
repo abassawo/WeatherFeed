@@ -92,6 +92,7 @@ class SearchViewModel @Inject constructor(
         if (hasLocationPermissions.not() && isFirstLaunch) {
             mutableViewEvent.value = SearchScreenContract.ViewEvent.ShowLocationPermissionPrompt
         }
+
         val viewState = viewState.value.copy(
             showPermissionNeeded = isLocationPermissionGranted().not()
         )
@@ -114,7 +115,10 @@ class SearchViewModel @Inject constructor(
         }
         mutableViewState.value = viewState.copy(
             showPermissionNeeded = hasLocationPermissions.not(),
-            currentWeather = currentWeather
+            currentWeather = currentWeather,
+            query = query.value,
+            citySearchResult = getSearchResultViewEntities.invoke(query.value),
+            isSearchActive = query.value.trim().isNotEmpty()
         )
     }
 
