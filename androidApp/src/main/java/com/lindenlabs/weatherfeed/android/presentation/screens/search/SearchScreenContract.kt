@@ -1,6 +1,6 @@
-package com.lindenlabs.weatherfeed.android.screens.search.presentation
+package com.lindenlabs.weatherfeed.android.presentation.screens.search
 
-import com.lindenlabs.weatherfeed.android.ui.WeatherCardViewEntity
+import com.lindenlabs.weatherfeed.android.presentation.ui.WeatherCardViewEntity
 
 object SearchScreenContract {
 

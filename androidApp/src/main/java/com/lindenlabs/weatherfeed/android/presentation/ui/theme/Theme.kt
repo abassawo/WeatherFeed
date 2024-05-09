@@ -1,4 +1,4 @@
-package com.lindenlabs.weatherfeed.android.ui.theme
+package com.lindenlabs.weatherfeed.android.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build

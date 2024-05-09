@@ -67,9 +67,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("com.google.android.gms:play-services-location:17.0.0")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.24.6-alpha")
-    val glide = "4.11.0"
-    implementation("com.github.bumptech.glide:glide:$glide")
-    kapt("com.github.bumptech.glide:compiler:$glide")
+
+//    implementation("com.github.bumptech.glide:compose:1.0.0-beta01+")
     implementation(Libs.Hilt.base)
     annotationProcessor(Libs.Hilt.compiler)
     implementation(Libs.retrofit)

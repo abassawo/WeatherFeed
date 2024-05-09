@@ -1,4 +1,4 @@
-package com.lindenlabs.weatherfeed.android.screens.history
+package com.lindenlabs.weatherfeed.android.presentation.screens.history
 
 import androidx.lifecycle.ViewModel
 import com.lindenlabs.weatherfeed.android.domain.RecordSearchHistory

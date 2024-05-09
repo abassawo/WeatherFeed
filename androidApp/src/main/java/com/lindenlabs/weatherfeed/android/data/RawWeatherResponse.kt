@@ -18,8 +18,15 @@ data class RawMainResponse(
     val pressure: Double,
     val humidity: Double,
     @SerializedName("sea_level") val seaLevel: Double,
-    @SerializedName("grnd_level") val groundLevel: Double
+    @SerializedName("grnd_level") val groundLevel: Double,
+    @SerializedName("weather") val weatherIcons: List<WeatherIcon>
 )
 
+data class WeatherIcon(val id: String, val main: String, val description: String, val icon: String) {
+    fun toUrl(): String {
+        return "https://openweathermap.org/img/wn/$icon@2x.png"
+    }
+}
 
-data class Coordinate(val lat: Float, @SerializedName("lon") val lng: Float )
+
+data class Coordinate(val lat: Float, @SerializedName("lon") val lng: Float)

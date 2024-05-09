@@ -1,6 +1,6 @@
 package com.lindenlabs.weatherfeed.android.data
 
-import com.lindenlabs.weatherfeed.android.Config.API_KEY
+import com.lindenlabs.weatherfeed.android.utils.Config.API_KEY
 import retrofit2.http.GET
 import retrofit2.http.Query
 

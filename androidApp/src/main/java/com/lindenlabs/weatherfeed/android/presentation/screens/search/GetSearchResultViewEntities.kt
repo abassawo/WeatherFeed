@@ -1,8 +1,8 @@
-package com.lindenlabs.weatherfeed.android.screens.search.presentation
+package com.lindenlabs.weatherfeed.android.presentation.screens.search
 
 import com.lindenlabs.weatherfeed.android.data.AppDataSource
 import com.lindenlabs.weatherfeed.android.data.Coordinate
-import com.lindenlabs.weatherfeed.android.ui.WeatherCardViewEntity
+import com.lindenlabs.weatherfeed.android.presentation.ui.WeatherCardViewEntity
 import javax.inject.Inject
 
 class GetSearchResultViewEntities @Inject constructor(
@@ -21,6 +21,6 @@ class GetSearchResultViewEntities @Inject constructor(
 
     suspend fun getWeather(coordinate: Coordinate): WeatherCardViewEntity {
         val weatherResponse = repository.getWeatherForCoordinate(coordinate)
-        return viewMapper.mapCurrentWeather(weatherResponse)
+        return viewMapper.map(weatherResponse)
     }
 }

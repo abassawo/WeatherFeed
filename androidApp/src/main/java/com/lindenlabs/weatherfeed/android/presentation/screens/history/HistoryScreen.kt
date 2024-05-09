@@ -1,4 +1,4 @@
-package com.lindenlabs.weatherfeed.android.screens.history
+package com.lindenlabs.weatherfeed.android.presentation.screens.history
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

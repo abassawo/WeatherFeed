@@ -16,6 +16,7 @@ class LocalTestRepository : AppDataSource {
                 humidity = 400.0,
                 seaLevel = 400.0,
                 groundLevel = 400.0,
+                weatherIcons = listOf(WeatherIcon("721", "haze", "haze", "50d"))
             )
         )
     }

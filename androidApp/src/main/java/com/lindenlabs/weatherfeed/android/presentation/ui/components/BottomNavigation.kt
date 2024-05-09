@@ -1,4 +1,4 @@
-package com.lindenlabs.weatherfeed.android.ui.components
+package com.lindenlabs.weatherfeed.android.presentation.ui.components
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.lindenlabs.weatherfeed.android.bottomNavigationItems
+import com.lindenlabs.weatherfeed.android.presentation.ui.bottomNavigationItems
 
 @Composable
 fun BottomNavigation(

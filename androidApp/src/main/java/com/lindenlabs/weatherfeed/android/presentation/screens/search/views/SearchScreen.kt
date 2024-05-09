@@ -1,4 +1,4 @@
-package com.lindenlabs.weatherfeed.android.screens.search.presentation.views
+package com.lindenlabs.weatherfeed.android.presentation.screens.search.views
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -20,7 +20,6 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.key
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,9 +27,9 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchScreenContract
-import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchViewModel
-import com.lindenlabs.weatherfeed.android.ui.WeatherCard
+import com.lindenlabs.weatherfeed.android.presentation.screens.search.SearchScreenContract
+import com.lindenlabs.weatherfeed.android.presentation.screens.search.SearchViewModel
+import com.lindenlabs.weatherfeed.android.presentation.ui.WeatherCard
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable

@@ -1,4 +1,4 @@
-package com.lindenlabs.weatherfeed.android.screens.search.presentation
+package com.lindenlabs.weatherfeed.android.presentation.screens.search
 
 import android.location.Location
 import android.util.Log
@@ -8,8 +8,8 @@ import com.lindenlabs.weatherfeed.android.data.Coordinate
 import com.lindenlabs.weatherfeed.android.domain.RecordSearchHistory
 import com.lindenlabs.weatherfeed.android.domain.location.GetLocation
 import com.lindenlabs.weatherfeed.android.domain.location.OnLocationListener
-import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchScreenContract.ViewState
-import com.lindenlabs.weatherfeed.android.ui.WeatherCardViewEntity
+import com.lindenlabs.weatherfeed.android.presentation.screens.search.SearchScreenContract.ViewState
+import com.lindenlabs.weatherfeed.android.presentation.ui.WeatherCardViewEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

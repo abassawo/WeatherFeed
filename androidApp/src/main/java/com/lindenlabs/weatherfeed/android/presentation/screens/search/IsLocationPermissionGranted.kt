@@ -1,4 +1,4 @@
-package com.lindenlabs.weatherfeed.android.screens.search.presentation
+package com.lindenlabs.weatherfeed.android.presentation.screens.search
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION

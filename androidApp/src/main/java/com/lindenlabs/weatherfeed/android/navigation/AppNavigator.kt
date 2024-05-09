@@ -1,7 +1,7 @@
 package com.lindenlabs.weatherfeed.android.navigation
 
 import androidx.navigation.NavHostController
-import com.lindenlabs.weatherfeed.android.Screen
+import com.lindenlabs.weatherfeed.android.presentation.ui.Screen
 
 class AppNavigator(private val navigator: NavHostController) {
 

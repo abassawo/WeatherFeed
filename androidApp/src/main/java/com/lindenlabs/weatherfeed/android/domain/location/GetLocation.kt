@@ -3,7 +3,7 @@ package com.lindenlabs.weatherfeed.android.domain.location
 import android.content.Context
 import android.location.Location
 import android.location.LocationManager
-import com.lindenlabs.weatherfeed.android.screens.search.presentation.IsLocationPermissionGranted
+import com.lindenlabs.weatherfeed.android.presentation.screens.search.IsLocationPermissionGranted
 import javax.inject.Inject
 
 interface OnLocationListener {

@@ -1,4 +1,4 @@
-package com.lindenlabs.weatherfeed.android
+package com.lindenlabs.weatherfeed.android.presentation.ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle

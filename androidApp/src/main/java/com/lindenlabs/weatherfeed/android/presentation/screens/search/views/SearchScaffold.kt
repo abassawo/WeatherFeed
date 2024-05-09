@@ -1,8 +1,7 @@
-package com.lindenlabs.weatherfeed.android.screens.search.presentation.views
+package com.lindenlabs.weatherfeed.android.presentation.screens.search.views
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,9 +12,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.lindenlabs.weatherfeed.android.screens.geo_weather_card.CurrentWeatherCard
-import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchViewModel
+import com.lindenlabs.weatherfeed.android.presentation.screens.geo_weather_card.CurrentWeatherCard
+import com.lindenlabs.weatherfeed.android.presentation.screens.search.SearchViewModel
 
 @Composable
 internal fun SearchScaffold(viewModel: SearchViewModel) {
