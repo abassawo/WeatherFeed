@@ -35,6 +35,10 @@ import com.lindenlabs.weatherfeed.android.ui.WeatherCard
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun SearchScreen(viewModel: SearchViewModel) {
+    val viewEvent = viewModel.viewEvent.collectAsState().value
+    if (viewEvent is SearchScreenContract.ViewEvent.ShowLastSearch) {
+        viewModel.search()
+    }
     val viewState = viewModel.viewState.collectAsState().value
     Scaffold { padding ->
         Column(

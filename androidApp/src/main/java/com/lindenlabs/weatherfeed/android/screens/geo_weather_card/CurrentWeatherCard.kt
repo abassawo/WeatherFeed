@@ -46,12 +46,7 @@ fun CurrentWeatherCard(viewModel: SearchViewModel) {
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
-            } ?: Button(onClick = {
-                viewModel.refresh()
-            }) {
-                Text(text = "Fetch weather for current location")
             }
-
         }
     }
 }

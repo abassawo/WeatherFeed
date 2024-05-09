@@ -44,22 +44,26 @@ class SearchViewModel @Inject constructor(
         ioScope.launch {
             tryToEmitLiveWeatherUpdate()
         }
+        val lastSearchedCity = recordSearchHistory.getHistory().lastOrNull()
+        lastSearchedCity?.let {
+            query.value = it
+            mutableViewEvent.value = SearchScreenContract.ViewEvent.ShowLastSearch(it)
+        }
     }
 
     fun search() {
-        if (query.value.isNotEmpty()) {
-            recordSearchHistory(query.value)
+        if (query.value.trim().isNotEmpty()) {
+            recordSearchHistory(query.value.trim())
             ioScope.launch(ioScope.coroutineContext) {
                 runCatching { getSearchResultViewEntities(query.value) }
                     .onSuccess {
                         Log.d("SVM", "Testing success $it")
-                        ioScope.launch {
-                            mutableViewState.value =
-                                viewState.value.copy(
-                                    showPermissionNeeded = isLocationPermissionGranted().not(),
-                                    citySearchResult = it, isSearchActive = true
-                                )
-                        }
+                        mutableViewState.value =
+                            viewState.value.copy(
+                                showPermissionNeeded = isLocationPermissionGranted().not(),
+                                citySearchResult = it,
+                                isSearchActive = true
+                            )
                     }
                     .onFailure {
                         Log.e("SVM", "Testing failed $it")

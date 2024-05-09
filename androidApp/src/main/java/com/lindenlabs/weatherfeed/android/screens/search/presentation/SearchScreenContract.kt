@@ -16,10 +16,9 @@ object SearchScreenContract {
     sealed class ViewEvent {
         object ShowLocationPermissionPrompt : ViewEvent()
 
-        data class ShowCurrentWeather(val viewEntity: WeatherCardViewEntity) : ViewEvent()
+        data class ShowLastSearch(val city: String) : ViewEvent()
 
     }
-
 
     object PermissionInteraction
 }
