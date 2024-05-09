@@ -11,12 +11,12 @@ class GetSearchResultViewEntities @Inject constructor(
 ) {
     suspend operator fun invoke(city: String): WeatherCardViewEntity? {
         return if (city.isNotEmpty()) {
-            viewMapper.mapSearch(weatherRepository.invoke(city))
+            weatherRepository.invoke(city)?.let { viewMapper.mapSearch(city, it) }
         } else null
     }
 
     suspend fun getWeather(coordinate: Coordinate): WeatherCardViewEntity {
-        val weatherResponse =  weatherRepository.getWeatherForCoordinate(coordinate)
+        val weatherResponse = weatherRepository.getWeatherForCoordinate(coordinate)
         return viewMapper.mapCurrentWeather(weatherResponse)
     }
 }

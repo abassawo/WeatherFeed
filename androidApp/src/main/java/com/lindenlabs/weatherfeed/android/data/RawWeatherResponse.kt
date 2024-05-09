@@ -4,14 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class RawWeatherResponse(
     val id: String,
-    @SerializedName("name") val cityName: String,
     val coord: Coordinate,
-    val rawWeathers: List<RawWeather>,
     val base: String,
-    val main: RawMainResponse,
+    @SerializedName("current") val main: RawMainResponse,
 )
 
-data class RawWeather(val id: Int, val main: String, val description: String, val icon: String)
 
 data class RawMainResponse(
     val temp: Double,
@@ -25,4 +22,4 @@ data class RawMainResponse(
 )
 
 
-data class Coordinate(val lat: Float, val lng: Float )
+data class Coordinate(val lat: Float, @SerializedName("lon") val lng: Float )

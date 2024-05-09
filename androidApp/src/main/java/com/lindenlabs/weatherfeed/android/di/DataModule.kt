@@ -2,10 +2,7 @@ package com.lindenlabs.weatherfeed.android.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.lindenlabs.weatherfeed.android.data.AppDataSource
 import com.lindenlabs.weatherfeed.android.data.WeatherService
-import com.lindenlabs.weatherfeed.android.screens.search.domain.GetSearchScreenUi
-import com.lindenlabs.weatherfeed.android.screens.search.domain.SearchScreenInteractor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,8 +23,6 @@ object DataModule {
     @Provides
     fun provideSharedPreferences(context: Context): SharedPreferences = context.getSharedPreferences("history", Context.MODE_PRIVATE)
 
-    @Provides
-    fun provideSearchInteractor(appDataSource: AppDataSource): SearchScreenInteractor = GetSearchScreenUi(appDataSource)
 
     val weatherApi = Retrofit.Builder()
         .baseUrl("https://api.openweathermap.org/")

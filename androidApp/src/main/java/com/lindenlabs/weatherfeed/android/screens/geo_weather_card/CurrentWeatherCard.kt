@@ -23,15 +23,12 @@ import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchView
 
 
 @Composable
-fun CurrentWeatherCard() {
-    val viewModel: SearchViewModel = hiltViewModel()
-    when (val viewEvent = viewModel.viewEvent.collectAsState().value) {
-        is SearchScreenContract.ViewEvent.ShowWeatherForCurrentLocation -> Card(Modifier.fillMaxWidth()) {
-            Text(text = viewEvent.currentWeather.description, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+fun CurrentWeatherCard(viewModel: SearchViewModel) {
+    val viewState = viewModel.viewState.collectAsState().value
+    viewState.currentWeather?.let {
+        Card(Modifier.fillMaxWidth()) {
+            Text(text = it.description, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
         }
-
-        SearchScreenContract.ViewEvent.ShowLocationPermissionPrompt -> PermissionNeededCard()
-        else -> Unit
     }
 }
 

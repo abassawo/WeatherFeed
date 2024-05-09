@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -14,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.lindenlabs.weatherfeed.android.screens.geo_weather_card.CurrentWeatherCard
 import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchViewModel
 
@@ -22,7 +20,7 @@ import com.lindenlabs.weatherfeed.android.screens.search.presentation.SearchView
 internal fun SearchScaffold(viewModel: SearchViewModel) {
     Scaffold(
         topBar = {
-            CollapsingEffectScreen()
+            CollapsingEffectScreen(viewModel)
         }) {
         Column(
             modifier = Modifier
@@ -36,7 +34,7 @@ internal fun SearchScaffold(viewModel: SearchViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CollapsingEffectScreen() {
+fun CollapsingEffectScreen(viewModel: SearchViewModel) {
     val lazyListState = rememberLazyListState()
     LazyColumn(
         Modifier
@@ -52,7 +50,7 @@ fun CollapsingEffectScreen() {
             )
         }
         item {
-            CurrentWeatherCard()
+            CurrentWeatherCard(viewModel = viewModel)
         }
     }
 }
