@@ -1,7 +1,6 @@
 package com.lindenlabs.weatherfeed.android.di
 
 import com.lindenlabs.weatherfeed.android.data.AppDataSource
-import com.lindenlabs.weatherfeed.android.data.LocalTestRepository
 import com.lindenlabs.weatherfeed.android.data.WeatherRepository
 import com.lindenlabs.weatherfeed.android.data.WeatherService
 import dagger.Module
@@ -14,7 +13,7 @@ import dagger.hilt.components.SingletonComponent
 class NetworkModule {
 
     @Provides
-    fun provideAppDataSource(service: WeatherService): AppDataSource = LocalTestRepository()
-//        WeatherRepository(service)
+    fun provideAppDataSource(service: WeatherService): AppDataSource =
+        WeatherRepository(service)
 
 }

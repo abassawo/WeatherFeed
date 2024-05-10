@@ -13,14 +13,17 @@ class GetSearchResultViewEntities @Inject constructor(
         return if (city.isNotEmpty()) {
             val coordinate = repository.getCoordinate(city)
             coordinate?.let {
-                getWeather(it)
+                getWeather(it, UseCase.Search(city))
             }
 
         } else null
     }
 
-    suspend fun getWeather(coordinate: Coordinate): WeatherCardViewEntity {
+    suspend fun getWeather(
+        coordinate: Coordinate,
+        useCase: UseCase
+    ): WeatherCardViewEntity {
         val weatherResponse = repository.getWeatherForCoordinate(coordinate)
-        return viewMapper.map(weatherResponse)
+        return viewMapper.map(weatherResponse, useCase)
     }
 }

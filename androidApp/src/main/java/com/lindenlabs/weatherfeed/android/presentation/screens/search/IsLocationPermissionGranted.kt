@@ -8,9 +8,13 @@ import androidx.core.content.ContextCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class IsLocationPermissionGranted @Inject constructor(@ApplicationContext val context: Context) {
+interface LocationPermissions {
+    operator fun invoke() : Boolean
+}
 
-    operator fun invoke(): Boolean = hasPermission(ACCESS_FINE_LOCATION) ||
+class IsLocationPermissionGranted @Inject constructor(@ApplicationContext val context: Context) : LocationPermissions {
+
+    override operator fun invoke(): Boolean = hasPermission(ACCESS_FINE_LOCATION) ||
             hasPermission(ACCESS_COARSE_LOCATION)
 
      private fun hasPermission(permission: String): Boolean {

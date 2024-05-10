@@ -1,5 +1,7 @@
 package com.lindenlabs.weatherfeed.android.utils
 
+import com.lindenlabs.weatherfeed.android.BuildConfig
+
 object Config {
-    const val API_KEY = "9204d16666ad8cb7fa9f8565531813c4"
+    const val API_KEY = BuildConfig.OPEN_WEATHER_API_KEY
 }

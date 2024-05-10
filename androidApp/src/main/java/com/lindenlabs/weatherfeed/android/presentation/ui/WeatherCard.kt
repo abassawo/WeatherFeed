@@ -27,11 +27,21 @@ fun WeatherCard(viewEntity: WeatherCardViewEntity?) {
             .padding(16.dp)
             .background(Color.Black)
     ) {
-        Text(viewEntity?.description ?: "", Modifier.wrapContentSize())
+        Text(viewEntity?.description ?: "",
+            Modifier
+                .wrapContentSize()
+                .padding(16.dp))
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
             viewEntity?.imageUrl?.let {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                    AsyncImage(model = it, contentDescription = viewEntity.imageDescription, modifier = Modifier.size(200.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    AsyncImage(
+                        model = it,
+                        contentDescription = viewEntity.imageDescription,
+                        modifier = Modifier.size(200.dp)
+                    )
                     Text(text = viewEntity?.imageDescription ?: "")
                 }
             }

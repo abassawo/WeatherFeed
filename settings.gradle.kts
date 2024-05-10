@@ -15,4 +15,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "WeatherFeed"
 include(":androidApp")
-include(":shared")

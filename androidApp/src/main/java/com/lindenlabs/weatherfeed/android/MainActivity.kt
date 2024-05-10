@@ -18,7 +18,6 @@ import com.lindenlabs.weatherfeed.android.domain.location.GpsUtils
 import com.lindenlabs.weatherfeed.android.domain.location.GpsUtils.Companion.LOCATION_REQUEST
 import com.lindenlabs.weatherfeed.android.domain.location.LocationViewModel
 import com.lindenlabs.weatherfeed.android.presentation.App
-import com.lindenlabs.weatherfeed.android.presentation.screens.search.SearchScreenContract
 import com.lindenlabs.weatherfeed.android.presentation.screens.search.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,7 +32,7 @@ class MainActivity : ComponentActivity() {
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
             this@MainActivity.isGPSEnabled = permissions.any { it.value }
-            viewModel.refresh(SearchScreenContract.PermissionInteraction)
+            viewModel.refresh()
         }
     }
 
@@ -54,7 +53,7 @@ class MainActivity : ComponentActivity() {
         GpsUtils(this).turnGPSOn(object : GpsUtils.OnGpsListener {
             override fun gpsStatus(isGPSEnable: Boolean) {
                 this@MainActivity.isGPSEnabled = isGPSEnable
-                viewModel.refresh(SearchScreenContract.PermissionInteraction)
+                viewModel.refresh()
             }
         })
     }

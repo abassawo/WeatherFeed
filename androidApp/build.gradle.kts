@@ -3,6 +3,7 @@ plugins {
     kotlin("android")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version("2.0.1")
 }
 
 kapt {
@@ -18,6 +19,7 @@ android {
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
+        buildConfigField("String", "OPENWEATHER_API_KEY", "\"" + System.getenv("OPENWEATHER_API_KEY") + "\"")
     }
     buildFeatures {
         compose = true
@@ -46,8 +48,8 @@ android {
 
 dependencies {
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     val composeVersion = "1.3.1"
-    implementation(project(":shared"))
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
@@ -59,7 +61,6 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     val navigation = "androidx.navigation:navigation-compose:2.5.2"
     implementation(navigation)
-    implementation("io.ktor:ktor-client-android:2.2.4")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
     implementation("com.squareup.okhttp3:logging-interceptor:3.9.0")
     implementation("com.squareup.retrofit2:retrofit:2.1.0")
@@ -67,10 +68,11 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("com.google.android.gms:play-services-location:17.0.0")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.24.6-alpha")
-
-//    implementation("com.github.bumptech.glide:compose:1.0.0-beta01+")
     implementation(Libs.Hilt.base)
     annotationProcessor(Libs.Hilt.compiler)
     implementation(Libs.retrofit)
     implementation(Libs.retrofitAdapter)
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:4.4.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
 }

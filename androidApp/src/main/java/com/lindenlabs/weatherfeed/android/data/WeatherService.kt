@@ -16,6 +16,7 @@ interface WeatherService {
     suspend fun getWeather(
         @Query("lat") lat: String,
         @Query("lon") lng: String,
+        @Query("units") unit: String = "imperial",
         @Query("appid") apiKey: String = API_KEY
     ): RawWeatherResponse
 }

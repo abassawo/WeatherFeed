@@ -3,9 +3,15 @@ package com.lindenlabs.weatherfeed.android.domain
 import android.content.SharedPreferences
 import javax.inject.Inject
 
-class RecordSearchHistory @Inject constructor(private val sharedPreferences: SharedPreferences) {
+interface Memory {
+    operator fun invoke(query: String)
+    fun getHistory(): Set<String>
+}
 
-    operator fun invoke(query: String) {
+class RecordSearchHistory @Inject constructor(private val sharedPreferences: SharedPreferences) :
+    Memory {
+
+    override operator fun invoke(query: String) {
         if (query.trim().isNotEmpty()) {
             val history = getHistory().toMutableSet()
             history.add(query)
@@ -16,7 +22,7 @@ class RecordSearchHistory @Inject constructor(private val sharedPreferences: Sha
         }
     }
 
-    fun getHistory(): Set<String> =
+    override fun getHistory(): Set<String> =
         sharedPreferences.getStringSet("history", emptySet()) ?: emptySet()
 
 }

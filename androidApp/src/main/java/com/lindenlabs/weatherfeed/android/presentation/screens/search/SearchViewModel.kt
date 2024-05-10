@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lindenlabs.weatherfeed.android.data.Coordinate
-import com.lindenlabs.weatherfeed.android.domain.RecordSearchHistory
-import com.lindenlabs.weatherfeed.android.domain.location.GetLocation
+import com.lindenlabs.weatherfeed.android.domain.Memory
+import com.lindenlabs.weatherfeed.android.domain.location.LocationInteractor
 import com.lindenlabs.weatherfeed.android.domain.location.OnLocationListener
 import com.lindenlabs.weatherfeed.android.presentation.screens.search.SearchScreenContract.ViewState
 import com.lindenlabs.weatherfeed.android.presentation.ui.WeatherCardViewEntity
@@ -21,11 +21,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    val isLocationPermissionGranted: IsLocationPermissionGranted,
-    val getLocation: GetLocation,
+    val isLocationPermissionGranted: LocationPermissions,
+    val getLocation: LocationInteractor,
     val getSearchResultViewEntities: GetSearchResultViewEntities,
-    val recordSearchHistory: RecordSearchHistory,
-) : ViewModel() {
+    val memory: Memory,
+) : ViewModel(), OnLocationListener {
     private var currentWeather: WeatherCardViewEntity? = null
     private val job = SupervisorJob()
     private val ioScope = CoroutineScope(Dispatchers.IO + job)
@@ -44,7 +44,7 @@ class SearchViewModel @Inject constructor(
         ioScope.launch {
             tryToEmitLiveWeatherUpdate()
         }
-        val lastSearchedCity = recordSearchHistory.getHistory().lastOrNull()
+        val lastSearchedCity = memory.getHistory().lastOrNull()
         lastSearchedCity?.let {
             query.value = it
             mutableViewEvent.value = SearchScreenContract.ViewEvent.ShowLastSearch(it)
@@ -53,7 +53,7 @@ class SearchViewModel @Inject constructor(
 
     fun search() {
         if (query.value.trim().isNotEmpty()) {
-            recordSearchHistory(query.value.trim())
+            memory(query.value.trim())
             ioScope.launch(ioScope.coroutineContext) {
                 runCatching { getSearchResultViewEntities(query.value) }
                     .onSuccess {
@@ -98,20 +98,9 @@ class SearchViewModel @Inject constructor(
         )
         if (hasLocationPermissions) {
             currentLocation?.let {
-                currentWeather = getSearchResultViewEntities.getWeather(it)
+                currentWeather = getSearchResultViewEntities.getWeather(it, UseCase.Location)
             }
-                ?: getLocation(object : OnLocationListener {
-                    override fun onLocationAvailable(location: Location) {
-                        ioScope.launch {
-                            currentWeather =
-                                location.let { getSearchResultViewEntities.getWeather(location.toCoordinate()) }
-                        }
-                    }
-
-                    override fun onLocationUnavailable() {
-                        currentWeather = null
-                    }
-                })
+                ?: getLocation(this)
         }
         mutableViewState.value = viewState.copy(
             showPermissionNeeded = hasLocationPermissions.not(),
@@ -123,11 +112,26 @@ class SearchViewModel @Inject constructor(
     }
 
 
-    fun refresh(interaction: SearchScreenContract.PermissionInteraction = SearchScreenContract.PermissionInteraction) {
-        Log.d("SVM", "Handle interaction $interaction")
+    fun refresh() {
         viewModelScope.launch {
             tryToEmitLiveWeatherUpdate()
         }
+    }
+
+    override fun onLocationAvailable(location: Location) {
+        ioScope.launch {
+            currentWeather =
+                location.let {
+                    getSearchResultViewEntities.getWeather(
+                        location.toCoordinate(),
+                        UseCase.Location
+                    )
+                }
+        }
+    }
+
+    override fun onLocationUnavailable() {
+        currentWeather = null
     }
 }
 
